@@ -1,0 +1,25 @@
+--- T4
+-- Count how many customers per city have
+-- at least two financial products.
+-- Results are grouped by city and ordered descending.
+
+SELECT
+  c.city,
+  COUNT(DISTINCT c.customer_id) AS num_clientes_mult_productos
+FROM `myproject-487315.myproyect.clientes` AS c
+LEFT JOIN `myproject-487315.myproyect.cuentas` AS cu
+    ON c.customer_id = cu.customer_id
+LEFT JOIN `myproject-487315.myproyect.tarjetas` AS t
+    ON c.customer_id = t.customer_id
+LEFT JOIN `myproject-487315.myproyect.prestamos` AS p
+    ON c.customer_id = p.customer_id
+WHERE (
+      -- Account and card
+      (cu.customer_id IS NOT NULL AND t.customer_id IS NOT NULL) OR
+      -- Account and loan
+      (cu.customer_id IS NOT NULL AND p.customer_id IS NOT NULL) OR
+      -- Card and loan
+      (t.customer_id IS NOT NULL AND p.customer_id IS NOT NULL)
+)
+GROUP BY c.city
+ORDER BY num_clientes_mult_productos DESC
