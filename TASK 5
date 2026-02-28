@@ -1,0 +1,29 @@
+--- T5
+-- Retrieve each customer and calculate how many products they have.
+-- We add 1 for each existing product (account, card, loan).
+-- Results are ordered by number of products in descending order.
+
+SELECT
+  c.customer_id,
+  c.name,
+
+  -- Count how many products the customer has
+  (CASE WHEN cu.customer_id IS NOT NULL THEN 1 ELSE 0 END +
+   CASE WHEN t.customer_id IS NOT NULL THEN 1 ELSE 0 END +
+   CASE WHEN p.customer_id IS NOT NULL THEN 1 ELSE 0 END
+  ) AS num_productos
+
+FROM `myproject-487315.myproyect.clientes` AS c
+LEFT JOIN `myproject-487315.myproyect.cuentas` AS cu
+    ON c.customer_id = cu.customer_id
+LEFT JOIN `myproject-487315.myproyect.tarjetas` AS t
+    ON c.customer_id = t.customer_id
+LEFT JOIN `myproject-487315.myproyect.prestamos` AS p
+    ON c.customer_id = p.customer_id
+
+-- Grouping is required in some SQL engines
+-- when selecting non-aggregated columns.
+GROUP BY c.customer_id, c.name, cu.customer_id, t.customer_id, p.customer_id
+
+-- Order by number of products descending
+ORDER BY num_productos DESC
