@@ -1,0 +1,25 @@
+--- T3
+-- Calculate the average account balance (cu.balance)
+-- for customers who have at least two products.
+-- The valid combinations are:
+-- account + card
+-- account + loan
+-- card + loan
+
+SELECT
+  AVG(cu.balance) AS saldo_promedio
+FROM `myproject-487315.myproyect.clientes` AS c
+LEFT JOIN `myproject-487315.myproyect.cuentas` AS cu
+    ON c.customer_id = cu.customer_id
+LEFT JOIN `myproject-487315.myproyect.tarjetas` AS t
+    ON c.customer_id = t.customer_id
+LEFT JOIN `myproject-487315.myproyect.prestamos` AS p
+    ON c.customer_id = p.customer_id
+WHERE (
+      -- Account and card
+      (cu.customer_id IS NOT NULL AND t.customer_id IS NOT NULL) OR
+      -- Account and loan
+      (cu.customer_id IS NOT NULL AND p.customer_id IS NOT NULL) OR
+      -- Card and loan
+      (t.customer_id IS NOT NULL AND p.customer_id IS NOT NULL)
+)
