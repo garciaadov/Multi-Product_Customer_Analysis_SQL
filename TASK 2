@@ -1,0 +1,36 @@
+--- T2
+-- Count how many customers have:
+-- 1) Only an account
+-- 2) Account and card
+-- 3) Account and loan
+-- 4) All three products
+-- LEFT JOIN is used to ensure customers without products are not excluded.
+
+SELECT
+  -- Customers who only have an account
+  SUM(CASE WHEN cu.customer_id IS NOT NULL 
+               AND t.customer_id IS NULL 
+               AND p.customer_id IS NULL THEN 1 ELSE 0 END) AS solo_cuenta,
+
+  -- Customers who have account and card, but no loan
+  SUM(CASE WHEN cu.customer_id IS NOT NULL 
+               AND t.customer_id IS NOT NULL 
+               AND p.customer_id IS NULL THEN 1 ELSE 0 END) AS cuenta_tarjeta,
+
+  -- Customers who have account and loan, but no card
+  SUM(CASE WHEN cu.customer_id IS NOT NULL 
+               AND t.customer_id IS NULL 
+               AND p.customer_id IS NOT NULL THEN 1 ELSE 0 END) AS cuenta_prestamo,
+
+  -- Customers who have all three products
+  SUM(CASE WHEN cu.customer_id IS NOT NULL 
+               AND t.customer_id IS NOT NULL 
+               AND p.customer_id IS NOT NULL THEN 1 ELSE 0 END) AS los_tres
+
+FROM `myproject-487315.myproyect.clientes` AS c
+LEFT JOIN `myproject-487315.myproyect.cuentas` AS cu
+    ON c.customer_id = cu.customer_id
+LEFT JOIN `myproject-487315.myproyect.tarjetas` AS t
+    ON c.customer_id = t.customer_id
+LEFT JOIN `myproject-487315.myproyect.prestamos` AS p
+    ON c.customer_id = p.customer_id
