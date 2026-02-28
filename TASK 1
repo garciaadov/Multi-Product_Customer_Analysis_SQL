@@ -1,0 +1,17 @@
+--- T1
+-- Retrieve customers who have all three products:
+-- account, card, and loan.
+-- INNER JOIN is used, so only customers present
+-- in all related tables will appear.
+
+SELECT DISTINCT c.customer_id
+FROM `myproject-487315.myproyect.clientes` AS c
+-- Join customers with accounts
+JOIN `myproject-487315.myproyect.cuentas` AS cu
+    ON c.customer_id = cu.customer_id
+-- Join customers with cards
+JOIN `myproject-487315.myproyect.tarjetas` AS t
+    ON c.customer_id = t.customer_id
+-- Join customers with loans
+JOIN `myproject-487315.myproyect.prestamos` AS p
+    ON c.customer_id = p.customer_id
